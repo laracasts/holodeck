@@ -1,0 +1,33 @@
+{
+    "name": "laracasts/holodeck",
+    "description": "A template kit for Laracasts projects.",
+    "type": "package",
+    "require": {
+        "php": "^8.3",
+        "league/commonmark": "^2.4",
+        "tempest/highlight": "^2.7"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Laracasts\\Holodeck\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "lukeraymonddowning",
+            "email": "lukeraymonddowning@gmail.com"
+        }
+    ],
+    "require-dev": {
+        "inertiajs/inertia-laravel": "^0.2.5",
+        "laravel/framework": "^11.9"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Laracasts\\Holodeck\\Providers\\HolodeckServiceProvider"
+            ]
+        }
+    }
+}
