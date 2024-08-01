@@ -4,6 +4,8 @@ namespace Laracasts\Holodeck\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Process;
+use function Laravel\Prompts\confirm;
 use function Laravel\Prompts\select;
 
 class InstallCommand extends Command
@@ -31,13 +33,25 @@ class InstallCommand extends Command
 
     private function install(): void
     {
+        $npmInstall = Process::start('npm install @tailwindcss/forms @tailwindcss/container-queries @tailwindcss/typography');
+
         File::copyDirectory(__DIR__  . '/../../fixtures/assets', resource_path('assets'));
         File::copyDirectory(__DIR__  . '/../../fixtures/fonts', resource_path('fonts'));
+
+        if (confirm('Publish updated Tailwind config?')) {
+            File::copy(__DIR__ . '/../../fixtures/tailwind.config.js', base_path());
+        }
+
+        if (confirm('Publish updated Vite config?')) {
+            File::copy(__DIR__ . '/../../fixtures/vite.config.js', base_path());
+        }
+
+        $npmInstall->wait();
     }
 
     private function installBlade(): void
     {
-
+        File::copyDirectory(__DIR__ . '/../../fixtures/blade', resource_path('views'));
     }
 
     private function installVue(): void
