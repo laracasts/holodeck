@@ -39,11 +39,11 @@ class InstallCommand extends Command
         File::copyDirectory(__DIR__  . '/../../fixtures/fonts', resource_path('fonts'));
 
         if (confirm('Publish updated Tailwind config?')) {
-            File::copy(__DIR__ . '/../../fixtures/tailwind.config.js', base_path());
+            File::copy(__DIR__ . '/../../fixtures/tailwind.config.js', base_path('tailwind.config.js'));
         }
 
         if (confirm('Publish updated Vite config?')) {
-            File::copy(__DIR__ . '/../../fixtures/vite.config.js', base_path());
+            File::copy(__DIR__ . '/../../fixtures/vite.config.js', base_path('vite.config.js'));
         }
 
         $npmInstall->wait();
