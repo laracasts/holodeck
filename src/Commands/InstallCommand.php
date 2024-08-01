@@ -3,7 +3,6 @@
 namespace Laracasts\Holodeck\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Contracts\Process\InvokedProcess;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
 use function Laravel\Prompts\confirm;
