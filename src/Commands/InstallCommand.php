@@ -13,11 +13,6 @@ class InstallCommand extends Command
 {
     protected $signature = 'holodeck:install';
 
-    /**
-     * @var array<InvokedProcess>
-     */
-    private array $openProcesses = [];
-
     public function handle(): void
     {
         $stack = select(
@@ -39,10 +34,10 @@ class InstallCommand extends Command
 
     private function install(): void
     {
-        $this->openProcesses[] = Process::start('npm install @tailwindcss/forms @tailwindcss/container-queries @tailwindcss/typography');
-
         File::copyDirectory(__DIR__  . '/../../fixtures/assets', resource_path('assets'));
         File::copyDirectory(__DIR__  . '/../../fixtures/fonts', resource_path('fonts'));
+
+        Process::run('npm install @tailwindcss/forms @tailwindcss/container-queries @tailwindcss/typography');
 
         if (confirm('Publish updated Tailwind config?')) {
             File::copy(__DIR__ . '/../../fixtures/tailwind.config.js', base_path('tailwind.config.js'));
@@ -50,10 +45,6 @@ class InstallCommand extends Command
 
         if (confirm('Publish updated Vite config?')) {
             File::copy(__DIR__ . '/../../fixtures/vite.config.js', base_path('vite.config.js'));
-        }
-
-        foreach ($this->openProcesses as $process) {
-            $process->wait();
         }
     }
 
@@ -65,7 +56,6 @@ class InstallCommand extends Command
     private function installVue(): void
     {
         File::copyDirectory(__DIR__ . '/../../fixtures/vue', resource_path('js'));
-
-        $this->openProcesses[] = Process::start('npm install @heroicons/vue');
+        Process::run('npm install @heroicons/vue');
     }
 }
