@@ -3,6 +3,7 @@
 namespace Laracasts\Holodeck\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Process\InvokedProcess;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Process;
 use function Laravel\Prompts\confirm;
@@ -11,6 +12,11 @@ use function Laravel\Prompts\select;
 class InstallCommand extends Command
 {
     protected $signature = 'holodeck:install';
+
+    /**
+     * @var array<InvokedProcess>
+     */
+    private array $openProcesses = [];
 
     public function handle(): void
     {
@@ -33,7 +39,7 @@ class InstallCommand extends Command
 
     private function install(): void
     {
-        $npmInstall = Process::start('npm install @tailwindcss/forms @tailwindcss/container-queries @tailwindcss/typography');
+        $this->openProcesses[] = Process::start('npm install @tailwindcss/forms @tailwindcss/container-queries @tailwindcss/typography');
 
         File::copyDirectory(__DIR__  . '/../../fixtures/assets', resource_path('assets'));
         File::copyDirectory(__DIR__  . '/../../fixtures/fonts', resource_path('fonts'));
@@ -46,7 +52,9 @@ class InstallCommand extends Command
             File::copy(__DIR__ . '/../../fixtures/vite.config.js', base_path('vite.config.js'));
         }
 
-        $npmInstall->wait();
+        foreach ($this->openProcesses as $process) {
+            $process->wait();
+        }
     }
 
     private function installBlade(): void
@@ -57,5 +65,7 @@ class InstallCommand extends Command
     private function installVue(): void
     {
         File::copyDirectory(__DIR__ . '/../../fixtures/vue', resource_path('js'));
+
+        $this->openProcesses[] = Process::start('npm install @heroicons/vue');
     }
 }
